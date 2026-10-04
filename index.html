@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#355e3b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Grading Calc">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>Room 134 Grading Calculator</title>
+<style>
+  :root{
+    --forest:#355e3b;
+    --leaf:#5f8f5f;
+    --sage:#dfead9;
+    --cream:#fffaf0;
+    --paper:#ffffff;
+    --text:#263126;
+    --muted:#667066;
+    --gold:#e7bf6a;
+    --line:#dfe6dc;
+    --danger:#a94a3f;
+  }
+  *{box-sizing:border-box}
+  html{background:var(--cream)}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:linear-gradient(180deg,var(--cream),#f4f8f1);
+    min-height:100%;
+  }
+  .app{
+    width:min(560px,100%);
+    margin:0 auto;
+    padding:18px 14px 32px;
+  }
+  .top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .icon{
+    width:58px;height:58px;border-radius:16px;
+    object-fit:cover;flex:0 0 auto;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(24px,7vw,34px);
+    line-height:1;
+    color:var(--forest);
+    letter-spacing:-.02em;
+  }
+  .sub{
+    margin:5px 0 0;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:16px;
+    box-shadow:0 6px 24px rgba(53,94,59,.07);
+  }
+  .inputs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  label{
+    display:block;
+    font-weight:800;
+    color:var(--forest);
+    font-size:13px;
+    margin-bottom:6px;
+  }
+  input{
+    width:100%;
+    min-height:58px;
+    border:2px solid #cdd9c9;
+    border-radius:16px;
+    padding:8px 12px;
+    font-size:26px;
+    font-weight:800;
+    color:var(--text);
+    background:#fbfdf9;
+    outline:none;
+  }
+  input:focus{
+    border-color:var(--leaf);
+    box-shadow:0 0 0 4px rgba(95,143,95,.13);
+  }
+  .error{
+    min-height:20px;
+    margin:8px 2px 0;
+    color:var(--danger);
+    font-weight:700;
+    font-size:13px;
+  }
+  .primary{
+    margin-top:12px;
+    border-radius:18px;
+    background:var(--sage);
+    border:2px solid #c5d9bd;
+    padding:14px;
+    text-align:center;
+  }
+  .primary .k{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    font-weight:900;
+    color:var(--forest);
+  }
+  .primary .v{
+    font-size:48px;
+    font-weight:950;
+    color:var(--forest);
+    line-height:1.05;
+    margin-top:2px;
+  }
+  .mini{
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+  }
+  .mini > div{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 8px;
+    background:#f8faf6;
+    text-align:center;
+  }
+  .mini .k{
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    color:var(--muted);
+    font-weight:900;
+  }
+  .mini .v{
+    margin-top:2px;
+    font-size:23px;
+    font-weight:900;
+    color:var(--forest);
+  }
+  .bands{
+    margin-top:12px;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .pill{
+    padding:6px 8px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#f4f7f1;
+    color:var(--forest);
+    font-size:11px;
+    font-weight:800;
+  }
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+  }
+  button{
+    min-height:48px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:850;
+    cursor:pointer;
+  }
+  .clear{background:#eef3eb;color:var(--forest);border:1px solid #d4dfd0}
+  .sample{background:var(--forest);color:#fff;border:1px solid var(--forest)}
+  .note{
+    margin:14px 2px 0;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.4;
+    text-align:center;
+  }
+  @media (max-width:390px){
+    .inputs{grid-template-columns:1fr}
+    .mini{grid-template-columns:1fr 1fr}
+    .mini > div:last-child{grid-column:1/-1}
+  }
+</style>
+</head>
+<body>
+<main class="app">
+  <div class="top">
+    <img src="icon-192.png" alt="" class="icon">
+    <div>
+      <h1>Grading Calculator</h1>
+      <p class="sub">Room 134 • standards-based assessment helper</p>
+    </div>
+  </div>
+
+  <section class="card">
+    <div class="inputs">
+      <div>
+        <label for="possible">Points possible</label>
+        <input id="possible" type="number" inputmode="numeric" min="1" step="1" value="10">
+      </div>
+      <div>
+        <label for="earned">Points earned</label>
+        <input id="earned" type="number" inputmode="numeric" min="0" step="1" value="8">
+      </div>
+    </div>
+
+    <div id="error" class="error" aria-live="polite"></div>
+
+    <div class="primary">
+      <div class="k">Enter in gradebook</div>
+      <div id="entry" class="v">9.1</div>
+    </div>
+
+    <div class="mini">
+      <div><div class="k">Adjusted</div><div id="pct" class="v">91%</div></div>
+      <div><div class="k">Mark</div><div id="mark" class="v">S+</div></div>
+      <div><div class="k">Raw</div><div id="raw" class="v">8 / 10</div></div>
+    </div>
+
+    <div class="bands">
+      <span class="pill">O 94–100</span>
+      <span class="pill">S+ 86–93</span>
+      <span class="pill">S 78–85</span>
+      <span class="pill">S- 70–77</span>
+      <span class="pill">N &lt;70</span>
+    </div>
+
+    <div class="actions">
+      <button class="clear" id="clearBtn" type="button">Clear</button>
+      <button class="sample" id="sampleBtn" type="button">Load example</button>
+    </div>
+
+    <p class="note">0 correct = 50% • 1 correct = 60% • full credit = 100% • scores in between are evenly spaced.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  const possible=document.getElementById('possible');
+  const earned=document.getElementById('earned');
+  const pct=document.getElementById('pct');
+  const mark=document.getElementById('mark');
+  const raw=document.getElementById('raw');
+  const entry=document.getElementById('entry');
+  const error=document.getElementById('error');
+
+  function getMark(p){
+    if(p>=.94)return'O';
+    if(p>=.86)return'S+';
+    if(p>=.78)return'S';
+    if(p>=.70)return'S-';
+    return'N';
+  }
+
+  function getAdjusted(total,got){
+    if(got===0)return .50;
+    if(total===1)return 1.00;
+    return Math.round((.60+.40*((got-1)/(total-1)))*100)/100;
+  }
+
+  function update(){
+    const t=Number(possible.value), e=Number(earned.value);
+    if(!Number.isFinite(t)||!Number.isFinite(e)||t<1||e<0){
+      error.textContent='Enter a valid total and score.';
+      pct.textContent=mark.textContent=raw.textContent=entry.textContent='—';
+      return;
+    }
+    if(e>t){
+      error.textContent='Points earned cannot be greater than points possible.';
+      pct.textContent=mark.textContent=raw.textContent=entry.textContent='—';
+      return;
+    }
+    error.textContent='';
+    const ap=getAdjusted(t,e);
+    const gb=Math.round(t*ap*10)/10;
+    pct.textContent=Math.round(ap*100)+'%';
+    mark.textContent=getMark(ap);
+    raw.textContent=e+' / '+t;
+    entry.textContent=gb.toFixed(1).replace(/\.0$/,'');
+  }
+
+  possible.addEventListener('input',update);
+  earned.addEventListener('input',update);
+
+  document.getElementById('clearBtn').addEventListener('click',()=>{
+    possible.value=''; earned.value=''; possible.focus(); update();
+  });
+
+  document.getElementById('sampleBtn').addEventListener('click',()=>{
+    possible.value='10'; earned.value='8'; update();
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>

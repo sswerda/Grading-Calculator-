@@ -1,0 +1,13 @@
+{
+  "name": "Room 134 Grading Calculator",
+  "short_name": "Grading Calc",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fffaf0",
+  "theme_color": "#355e3b",
+  "description": "Room 134 standards-based assessment grading calculator.",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ]
+}
